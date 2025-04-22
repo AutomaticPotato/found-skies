@@ -1,40 +1,9 @@
-# Nuxt Minimal Starter
+# Found Skies
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+The Lost Skies community did an incredible job mapping out the world.
 
-## Setup
+This is just a simple Nuxt application based on https://fancyapps.com/panzoom/ to have an easy way to pan and zoom the map
 
-Make sure to install dependencies:
+Thank you to NoxX, Cailco and the community for providing the map itself.
 
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
+The interactive map can be found here: https://automaticpotato.github.io/found-skies/

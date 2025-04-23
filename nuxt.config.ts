@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/ui'
   ],
-
+  ssr: false,
   app: {
     baseURL: "/found-skies/"
   }

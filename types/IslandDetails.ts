@@ -8,4 +8,6 @@ export type IslandDetails = {
     yPercentage?: number
     altitude?: number
     difficulty?: number
+    ark?: boolean,
+    note?: string
 }

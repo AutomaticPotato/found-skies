@@ -20,7 +20,7 @@
 
     <UPopover>
       <UButton>
-        <div class="min-w-15 min-h-15 bg-red-600/30"/>
+        <div class="min-w-15 min-h-15 "/>
       </UButton>
       <template #content>
         <UCard variant="subtle" class="bg-blue-100 drop-shadow-lg rounded-md px-5 py-3">

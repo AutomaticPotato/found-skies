@@ -16,9 +16,12 @@
 </script>
 
 <template>
-  <div data-panzoom-pin :data-x="xPosition" :data-y="yPosition">
+  <div class="absolute" :style="{ left: xPosition, top: yPosition }">
+
     <UPopover>
-      <UButton icon="solar:info-circle-bold" class="text-2xl" />
+      <UButton>
+        <div class="min-w-15 min-h-15 bg-red-600/30"/>
+      </UButton>
       <template #content>
         <UCard variant="subtle" class="bg-blue-100 drop-shadow-lg rounded-md px-5 py-3">
           <template #header>
@@ -62,3 +65,7 @@
     </UPopover>
   </div>
 </template>
+
+<style scoped>
+
+</style>

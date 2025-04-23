@@ -21,10 +21,10 @@
 
           <template #default>
             <div class="grid grid-cols-2 items-center gap-3">
-              <Icon size="20" v-if="islandDetails.amountOfKnowledgeNodes" name="game-icons:brain" />
+              <Icon v-if="islandDetails.amountOfKnowledgeNodes" size="20" name="game-icons:brain" />
               <span v-if="islandDetails.amountOfKnowledgeNodes">{{islandDetails.amountOfKnowledgeNodes}}</span>
 
-              <Icon size="20" v-if="islandDetails.altitude" name="material-symbols:altitude" />
+              <Icon v-if="islandDetails.altitude" size="20" name="material-symbols:altitude" />
              <span v-if="islandDetails.altitude">{{islandDetails.altitude}}</span>
 
               <span v-if="islandDetails.xCoordinate">X</span>
@@ -34,7 +34,7 @@
               <span v-if="islandDetails.yCoordinate">Y</span>
               <span v-if="islandDetails.yCoordinate">{{islandDetails.yCoordinate}}</span>
 
-              <Icon size="20" v-if="islandDetails.difficulty" name="material-symbols-light:swords" />
+              <Icon v-if="islandDetails.difficulty" size="20" name="material-symbols-light:swords" />
               <span v-if="islandDetails.difficulty">{{islandDetails.difficulty}}</span>
             </div>
           </template>

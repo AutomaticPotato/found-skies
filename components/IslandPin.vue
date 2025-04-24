@@ -18,9 +18,9 @@
 <template>
   <div class="absolute" :style="{ left: xPosition, top: yPosition }">
 
-    <UPopover>
+    <UPopover trigger="click">
       <UButton>
-        <div class="min-w-15 min-h-15 "/>
+        <div class="min-w-15 min-h-15" />
       </UButton>
       <template #content>
         <UCard variant="subtle" class="bg-blue-100 drop-shadow-lg rounded-md px-5 py-3">
@@ -29,36 +29,52 @@
           </template>
 
           <template #default>
-            <div class="grid grid-cols-2 items-center gap-3 mt-3">
-              <Icon v-if="islandDetails.amountOfKnowledgeNodes" size="20" name="game-icons:brain" />
-              <span v-if="islandDetails.amountOfKnowledgeNodes">{{islandDetails.amountOfKnowledgeNodes}}</span>
+            <div class="grid grid-cols-[auto_1fr] items-center gap-3 mt-3 max-w-sm break-words">
+              <Icon size="20" name="material-symbols:altitude" :title="'Altitude'" />
+              <span>{{islandDetails.altitude || "Unknown"}}</span>
 
-              <Icon v-if="islandDetails.altitude" size="20" name="material-symbols:altitude" />
-             <span v-if="islandDetails.altitude">{{islandDetails.altitude}}</span>
+              <!-- <span title="X Coordinate">X</span>
+              <span>{{islandDetails.xCoordinate || "Unknown"}}</span>
 
-              <span v-if="islandDetails.xCoordinate">X</span>
-              <span v-if="islandDetails.xCoordinate">{{islandDetails.xCoordinate}}</span>
+              <span title="Y Coordinate">Y</span>
+              <span>{{islandDetails.yCoordinate || "Unknown"}}</span> -->
 
+              <Icon size="20" name="material-symbols-light:swords" :title="'Difficulty'" />
+              <span>{{islandDetails.difficulty || "Unknown"}}</span>
 
-              <span v-if="islandDetails.yCoordinate">Y</span>
-              <span v-if="islandDetails.yCoordinate">{{islandDetails.yCoordinate}}</span>
+              <span title="Ark">Ark</span>
+              <span>{{islandHasArk}}</span>
 
-              <Icon v-if="islandDetails.difficulty" size="20" name="material-symbols-light:swords" />
-              <span v-if="islandDetails.difficulty">{{islandDetails.difficulty}}</span>
+              <Icon size="20" name="game-icons:brain" :title="'Databanks'" />
+              <span>{{islandDetails.databanks || "Unknown"}}</span>
 
+              <Icon size="20" name="mdi:pickaxe" :title="'Metals'" />
+              <span>{{islandDetails.metals?.join(', ') || "Unknown"}}</span>
 
-              <span>Ark</span>
-              <span >{{islandHasArk}}</span>
+              <Icon size="20" name="mdi:tree" :title="'Wood'" />
+              <span>{{islandDetails.wood?.join(', ') || "Unknown"}}</span>
+
+              <Icon size="20" name="mdi:leaf" :title="'Plants'" />
+              <span>{{islandDetails.plants?.join(', ') || "Unknown"}}</span>
+
+              <Icon size="20" name="mdi:package-variant" :title="'Items'" />
+              <span>{{islandDetails.items?.join(', ') || "Unknown"}}</span>
+
+              <Icon size="20" name="mdi:paw" :title="'Animals'" />
+              <span>{{islandDetails.animals?.join(', ') || "Unknown"}}</span>
+
+              <Icon size="20" name="mdi:treasure-chest" :title="'Chest Items'" />
+              <span>{{islandDetails.chestItems?.join(', ') || "Unknown"}}</span>
             </div>
           </template>
 
           <template v-if="islandDetails.note" #footer>
-           <div class="flex flex-col mt-3">
-             <span class="font-bold">Note:</span>
-             <p class="max-w-80">
-              {{islandDetails.note}}
-             </p>
-           </div>
+            <div class="flex flex-col mt-3">
+              <span class="font-bold">Note:</span>
+              <p class="max-w-80">
+                {{islandDetails.note}}
+              </p>
+            </div>
           </template>
         </UCard>
       </template>

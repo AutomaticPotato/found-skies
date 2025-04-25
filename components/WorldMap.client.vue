@@ -21,7 +21,7 @@ const initLeafletMap = () => {
     crs: L.CRS.Simple,
     zoomControl: true,
     scrollWheelZoom: true,
-    minZoom: -8,
+    minZoom: -5,
     maxZoom: 5,
     zoomSnap: 0.1,
     attributionControl: false,
@@ -33,11 +33,9 @@ const addMarkersToMap = () => {
     const x = island.xCoordinate || 0;
     const y = island.yCoordinate || 0;
 
-    L.circleMarker([y, x], {
-      color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.8,
-      radius: 5,
+    L.circle([y, x], {
+      color: getMarkerColor(island.difficulty || 0),
+      radius: 500,
     }).bindPopup(createMapPinPopup(island))
         .addTo(leafletMap.value!);
 
@@ -48,6 +46,13 @@ const addMarkersToMap = () => {
     padding: [100, 100]
   });
 };
+
+const getMarkerColor = (difficulty: number) => {
+  if (difficulty < 8) return '#96C839'
+  if (difficulty < 11) return '#5BB096'
+  if (difficulty < 14) return '#8E5BB7'
+  else return '#C8394B'
+}
 
 </script>
 

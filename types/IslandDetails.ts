@@ -15,4 +15,6 @@ export type IslandDetails = {
     items: string[],
     animals: string[],
     chestItems: string[],
+    createdBy: string,
+    link: string
 }

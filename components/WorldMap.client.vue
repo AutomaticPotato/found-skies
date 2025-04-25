@@ -8,9 +8,9 @@ import type {IslandDetails} from '~/types/IslandDetails';
 import {createMapPinPopup} from '~/utils/createMapPinPopup';
 
 const leafletMap = ref<L.Map>();
-
 const circleLayer = L.layerGroup();
 const imageLayer = L.layerGroup();
+const imageMarkers: L.Marker[] = [];
 
 const getMarkerColor = (difficulty: number) => {
   if (difficulty < 8) return '#96C839';
@@ -31,15 +31,38 @@ const addMarkersToLayers = () => {
     }).bindPopup(createMapPinPopup(island));
     circleLayer.addLayer(circle);
 
-    // Image marker (replace 'your-icon.png' with your actual image path)
+    // Image marker
     const imageIcon = L.icon({
-      iconUrl: '/your-icon.png', // Public path or import via `new URL()`
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-      popupAnchor: [0, -16],
+      iconUrl: `/islands/${island.id}.png`,
+      iconSize: [150, 150],
+      iconAnchor: [75, 75],
+      popupAnchor: [0, -75],
     });
+
     const imageMarker = L.marker([y, x], {icon: imageIcon}).bindPopup(createMapPinPopup(island));
     imageLayer.addLayer(imageMarker);
+    imageMarkers.push(imageMarker);
+  });
+};
+
+const updateImageMarkerSizes = () => {
+  const zoom = leafletMap.value!.getZoom();
+  const baseSize = 700; // base size at zoom 0
+  const scaleFactor = Math.pow(2, zoom); // adjust scaling curve
+  const newSize = baseSize * scaleFactor;
+  const iconSize: [number, number] = [newSize, newSize];
+  const iconAnchor: [number, number] = [newSize / 2, newSize / 2];
+  const popupAnchor: [number, number] = [0, -newSize / 2];
+
+  imageMarkers.forEach(marker => {
+    const iconUrl = marker.options.icon?.options.iconUrl || '';
+    const newIcon = L.icon({
+      iconUrl,
+      iconSize,
+      iconAnchor,
+      popupAnchor,
+    });
+    marker.setIcon(newIcon);
   });
 };
 
@@ -57,43 +80,31 @@ const initLeafletMap = () => {
   }).setView([yCoordinate, xCoordinate], 0);
 
   addMarkersToLayers();
-
-  // Default layer
   circleLayer.addTo(leafletMap.value!);
 
-  // Fit bounds
+  // Fit map to bounds
   const bounds = L.latLngBounds(islandData.map(i => [i.yCoordinate, i.xCoordinate]));
   leafletMap.value!.fitBounds(bounds, {padding: [100, 100]});
 
-  // Add Layer Control UI
   const baseLayers = {
-    'Circles': circleLayer,
-    'Images': imageLayer,
+    Circles: circleLayer,
+    Images: imageLayer,
   };
   L.control.layers(baseLayers).addTo(leafletMap.value!);
 
-  // Auto toggle based on zoom
   leafletMap.value!.on('zoomend', () => {
     const zoom = leafletMap.value!.getZoom();
-
+    console.log(zoom)
     if (zoom >= -4) {
-      if (leafletMap.value!.hasLayer(circleLayer)) {
-        leafletMap.value!.removeLayer(circleLayer);
-      }
-      if (!leafletMap.value!.hasLayer(imageLayer)) {
-        leafletMap.value!.addLayer(imageLayer);
-      }
+      if (leafletMap.value!.hasLayer(circleLayer)) leafletMap.value!.removeLayer(circleLayer);
+      if (!leafletMap.value!.hasLayer(imageLayer)) leafletMap.value!.addLayer(imageLayer);
+      updateImageMarkerSizes();
     } else {
-      if (leafletMap.value!.hasLayer(imageLayer)) {
-        leafletMap.value!.removeLayer(imageLayer);
-      }
-      if (!leafletMap.value!.hasLayer(circleLayer)) {
-        leafletMap.value!.addLayer(circleLayer);
-      }
+      if (leafletMap.value!.hasLayer(imageLayer)) leafletMap.value!.removeLayer(imageLayer);
+      if (!leafletMap.value!.hasLayer(circleLayer)) leafletMap.value!.addLayer(circleLayer);
     }
   });
 };
-
 
 onMounted(async () => {
   await nextTick();
@@ -104,5 +115,6 @@ onMounted(async () => {
 <template>
   <div id="map" class="h-screen w-screen !bg-blue-200"/>
 </template>
+
 
 

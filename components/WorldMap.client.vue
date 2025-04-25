@@ -33,7 +33,7 @@ const addMarkersToLayers = () => {
 
     // Image marker
     const imageIcon = L.icon({
-      iconUrl: `/islands/${island.id}.png`,
+      iconUrl: `islands/${island.id}.png`,
       iconSize: [150, 150],
       iconAnchor: [75, 75],
       popupAnchor: [0, -75],

@@ -7,5 +7,6 @@
     <a class="absolute bottom-5 right-5 text-5xl" target="_blank" href="https://github.com/AutomaticPotato/found-skies">
       <Icon name="mdi:github" />
     </a>
+    <NuxtImg class="absolute top-5 left-10 size-40" src="/compass.svg"/>
   </div>
 </template>

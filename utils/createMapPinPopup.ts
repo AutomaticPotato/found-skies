@@ -2,7 +2,7 @@ import type {IslandDetails} from "~/types/IslandDetails";
 
 export const createMapPinPopup = (islandDetails: IslandDetails) => {
     return `
-  <div>
+  <div class="">
             <h2 class="text-xl">${islandDetails.name} - ${islandDetails.id}</h2>
 
             <div class="grid grid-cols-[auto_1fr] items-center gap-3 mt-3  break-words">

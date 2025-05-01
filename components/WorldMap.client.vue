@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, watch} from 'vue';
+import {ref, onMounted, watch, nextTick} from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -11,6 +11,7 @@ const leafletMap = ref<L.Map>();
 const circleLayer = L.layerGroup();
 const imageLayer = L.layerGroup();
 const imageMarkers: L.Marker[] = [];
+const mapContainer = useTemplateRef("mapContainer")
 
 const islandData = useLiveMapData();
 
@@ -60,49 +61,60 @@ const updateImageMarkerSizes = () => {
 };
 
 const initLeafletMap = () => {
-  const {yCoordinate, xCoordinate} = islandData.value[0];
-  leafletMap.value = L.map('map', {
-    crs: L.CRS.Simple,
-    zoomControl: true,
-    scrollWheelZoom: true,
-    minZoom: -5,
-    maxZoom: 5,
-    zoomSnap: 0.1,
-    attributionControl: false,
-  }).setView([yCoordinate, xCoordinate], 0);
+  if (!mapContainer.value) {
+    console.error('Map container not found');
+    return;
+  }
 
-  addMarkersToLayers();
-  circleLayer.addTo(leafletMap.value!);
+  try {
+    const {yCoordinate, xCoordinate} = islandData.value[0];
+    leafletMap.value = L.map('map', {
+      crs: L.CRS.Simple,
+      zoomControl: true,
+      scrollWheelZoom: true,
+      minZoom: -5,
+      maxZoom: 5,
+      zoomSnap: 0.1,
+      attributionControl: false,
+    }).setView([yCoordinate, xCoordinate], 0);
 
-  const bounds = L.latLngBounds(islandData.value.map(i => [i.yCoordinate, i.xCoordinate]));
-  leafletMap.value!.fitBounds(bounds, {padding: [100, 100]});
+    addMarkersToLayers();
+    circleLayer.addTo(leafletMap.value!);
 
-  const baseLayers = {
-    Circles: circleLayer,
-    Images: imageLayer,
-  };
-  L.control.layers(baseLayers).addTo(leafletMap.value!);
+    const bounds = L.latLngBounds(islandData.value.map(i => [i.yCoordinate, i.xCoordinate]));
+    leafletMap.value!.fitBounds(bounds, {padding: [100, 100]});
 
-  leafletMap.value!.on('zoomend', () => {
-    const zoom = leafletMap.value!.getZoom();
-    if (zoom >= -4) {
-      if (leafletMap.value!.hasLayer(circleLayer)) leafletMap.value!.removeLayer(circleLayer);
-      if (!leafletMap.value!.hasLayer(imageLayer)) leafletMap.value!.addLayer(imageLayer);
-      updateImageMarkerSizes();
-    } else {
-      if (leafletMap.value!.hasLayer(imageLayer)) leafletMap.value!.removeLayer(imageLayer);
-      if (!leafletMap.value!.hasLayer(circleLayer)) leafletMap.value!.addLayer(circleLayer);
-    }
-  });
+    const baseLayers = {
+      Circles: circleLayer,
+      Images: imageLayer,
+    };
+    L.control.layers(baseLayers).addTo(leafletMap.value!);
+
+    leafletMap.value!.on('zoomend', () => {
+      const zoom = leafletMap.value!.getZoom();
+      if (zoom >= -4) {
+        if (leafletMap.value!.hasLayer(circleLayer)) leafletMap.value!.removeLayer(circleLayer);
+        if (!leafletMap.value!.hasLayer(imageLayer)) leafletMap.value!.addLayer(imageLayer);
+        updateImageMarkerSizes();
+      } else {
+        if (leafletMap.value!.hasLayer(imageLayer)) leafletMap.value!.removeLayer(imageLayer);
+        if (!leafletMap.value!.hasLayer(circleLayer)) leafletMap.value!.addLayer(circleLayer);
+      }
+    });
+  } catch (error) {
+    console.error('Error initializing map:', error);
+  }
 };
 
-// ✅ Only init map **when islandData is available**
+// ✅ Only init map **when islandData is available and DOM is ready**
 onMounted(() => {
   watch(
       () => islandData.value,
       (newVal) => {
         if (newVal.length > 0) {
-          initLeafletMap();
+          nextTick(() => {
+            initLeafletMap();
+          });
         }
       },
       {immediate: true}
@@ -111,8 +123,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="map" class="h-screen w-screen !bg-blue-200"/>
+  <div id="map" ref="mapContainer" class="h-screen w-screen !bg-blue-200"/>
 </template>
-
-
-

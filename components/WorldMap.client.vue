@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref, onMounted, watch, nextTick} from 'vue';
-import L from 'leaflet';
+import L, {type LatLngBoundsExpression} from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import type {IslandDetails} from '~/types/IslandDetails';
@@ -14,18 +14,37 @@ const imageMarkers: L.Marker[] = [];
 const mapContainer = useTemplateRef("mapContainer")
 
 const islandData = useLiveMapData();
+const store = useVisitedIslandsStore();
 
 const addMarkersToLayers = () => {
   islandData.value.forEach((island: IslandDetails) => {
     const x = island.xCoordinate || 0;
     const y = island.yCoordinate || 0;
 
-    const circle = L.circle([y, x], {
-      color: getMarkerColor(island.difficulty || 0),
-      radius: 500,
-    }).bindPopup(createMapPinPopup(island));
-    circleLayer.addLayer(circle);
+    const bounds: LatLngBoundsExpression = [
+      [y - 500, x - 500],
+      [y + 500, x + 500],
+    ];
 
+    const isVisited = store.isIslandVisited(island.id);
+
+    let shape: L.Layer;
+
+    if (isVisited) {
+      shape = L.rectangle(bounds, {
+        color: getMarkerColor(island.difficulty || 0),
+        weight: 2,
+      }).bindPopup(createMapPinPopup(island));
+    } else {
+      shape = L.circle([y, x], {
+        color: getMarkerColor(island.difficulty || 0),
+        radius: 500,
+      }).bindPopup(createMapPinPopup(island));
+    }
+
+    circleLayer.addLayer(shape);
+
+    // Still add image marker
     const imageIcon = L.icon({
       iconUrl: `islands/${island.id}.png`,
       iconSize: [400, 400],
@@ -120,6 +139,13 @@ onMounted(() => {
       {immediate: true}
   );
 });
+
+watch(() => store.visitedIslands, () => {
+  circleLayer.clearLayers();
+  imageLayer.clearLayers();
+  imageMarkers.length = 0;
+  addMarkersToLayers();
+}, {deep: true});
 </script>
 
 <template>

@@ -46,6 +46,7 @@ const closeImageDialog = () => {
     <h2 class="text-xl">{{ islandDetails.name }} - {{ islandDetails.id }}</h2>
     <button class="cursor-pointer" @click="openImageDialog">
       <img
+        loading="lazy"
         v-if="isCoverImageLoaded"
         class="w-full rounded-xl drop-shadow active:drop-shadow-none"
         :src="coverUrl"
@@ -102,7 +103,7 @@ const closeImageDialog = () => {
       @close="closeImageDialog"
       @click="closeImageDialog"
     >
-      <img :src="coverUrl" />
+      <img loading="lazy" :src="coverUrl" />
     </dialog>
   </Teleport>
 </template>

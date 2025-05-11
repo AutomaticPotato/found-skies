@@ -8,6 +8,8 @@ const { islandDetails } = defineProps<{ islandDetails: IslandDetails }>();
 const store = useVisitedIslandsStore();
 const isIslandVisited = computed(() => store.isIslandVisited(islandDetails.id));
 
+const { baseURL } = useRuntimeConfig().app;
+
 const hasArc = computed(() => {
   if (islandDetails.ark === null || islandDetails.ark === undefined)
     return "❓";
@@ -15,7 +17,7 @@ const hasArc = computed(() => {
   return "❌";
 });
 
-const coverUrl = computed(() => `/covers/${islandDetails.id}.png`);
+const coverUrl = computed(() => `${baseURL}covers/${islandDetails.id}.png`);
 const isCoverImageLoaded = ref(true);
 const showDialog = ref(false); // Tracks whether the dialog should be rendered
 const imageDialog = useTemplateRef<HTMLDialogElement>("imageDialog");
